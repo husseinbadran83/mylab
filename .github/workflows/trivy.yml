@@ -27,7 +27,7 @@ jobs:
             ./${{ matrix.app }}
 
       - name: Run Trivy
-        uses: aquasecurity/trivy-action@0.31.0
+        uses: aquasecurity/trivy-action@<commit-sha>
         with:
           image-ref: ${{ matrix.app }}:latest
           format: table
