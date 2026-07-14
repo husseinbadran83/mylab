@@ -14,8 +14,7 @@ jobs:
         app:
           - auth
           - ui
-         exclude:
-          - weather
+  
 
     steps:
       - name: Checkout repository
