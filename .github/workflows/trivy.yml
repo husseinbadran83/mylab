@@ -13,7 +13,7 @@ jobs:
       matrix:
         app:
           - auth
-          - UI
+          - ui
           - weather
 
     steps:
