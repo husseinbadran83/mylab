@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: weatherapp-auth
-        image: husseinbadran/hbadran-kubernetes:weather-auth
+        image: husseinbadran/myweather-auth:weather-auth
         imagePullPolicy: IfNotPresent
         ##imagePullPolicy: Never 
         ports:
