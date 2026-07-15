@@ -40,5 +40,5 @@ jobs:
           context: ./${{ matrix.app }}
           push: true
           tags: |
-            husseinbadran83/${{ matrix.app }}:latest
-            husseinbadran83/${{ matrix.app }}:${{ github.sha }}
+            husseinbadran/${{ matrix.app }}:latest
+            husseinbadran/${{ matrix.app }}:${{ github.sha }}
