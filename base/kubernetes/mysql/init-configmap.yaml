@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: mysql-init-script
   annotations:
-    argocd.argoproj.io/sync-wave: "-4"
+    argocd.argoproj.io/sync-wave: "-3"
 
 data:
   init.sql: |
