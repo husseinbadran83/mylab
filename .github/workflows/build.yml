@@ -32,7 +32,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: husseinbadran83/${{ matrix.app }}
+          images: husseinbadran/${{ matrix.app }}
 
       - name: Build and Push
         uses: docker/build-push-action@v6
