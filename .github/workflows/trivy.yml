@@ -1,39 +1,37 @@
-<<<<<<< HEAD
-name: Trivy Image Scan
+# name: Trivy Image Scan
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
 
-jobs:
-  trivy:
-    runs-on: ubuntu-latest
+# jobs:
+#   trivy:
+#     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        app:
-          - auth
-          - ui
+#     strategy:
+#       matrix:
+#         app:
+#           - auth
+#           - ui
   
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: |
-          docker build \
-            -t ${{ matrix.app }}:latest \
-            ./${{ matrix.app }}
+#       - name: Build Docker image
+#         run: |
+#           docker build \
+#             -t ${{ matrix.app }}:latest \
+#             ./${{ matrix.app }}
 
-      - name: Run Trivy
-        uses: aquasecurity/trivy-action@v0.36.0
-        with:
-          image-ref: ${{ matrix.app }}:latest
-          format: table
-          exit-code: 1
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
-=======
->>>>>>> cf9beda (gitops 1)
+#       - name: Run Trivy
+#         uses: aquasecurity/trivy-action@v0.36.0
+#         with:
+#           image-ref: ${{ matrix.app }}:latest
+#           format: table
+#           exit-code: 1
+#           severity: HIGH,CRITICAL
+#           ignore-unfixed: true
+
