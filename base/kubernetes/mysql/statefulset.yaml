@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: mysql
   annotations:
-    argocd.argoproj.io/sync-wave: "-2"
+    argocd.argoproj.io/sync-wave: "-3"
 spec:
   serviceName: "mysql"
   replicas: 1
