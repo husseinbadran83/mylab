@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mysql-init-job
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+
+      containers:
+      - name: mysql-init
+        image: mysql:5.7
+
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-password
+
+        - name: MYSQL_HOST
+          value: mysql
+
+        volumeMounts:
+        - name: init-script
+          mountPath: /scripts
+
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Waiting for MySQL..."
+
+          until mysqladmin ping \
+            -h${MYSQL_HOST} \
+            -uroot \
+            -p${MYSQL_ROOT_PASSWORD} \
+            --silent
+          do
+            sleep 5
+          done
+
+          echo "Executing init.sql..."
+
+          mysql \
+            -h${MYSQL_HOST} \
+            -uroot \
+            -p${MYSQL_ROOT_PASSWORD} \
+            < /scripts/init.sql
+
+      volumes:
+      - name: init-script
+        configMap:
+          name: mysql-init-script
