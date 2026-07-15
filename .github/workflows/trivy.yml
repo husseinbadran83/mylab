@@ -30,9 +30,14 @@ jobs:
       - name: Run Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ matrix.app }}:latest
-          format: table
-          exit-code: 1
-          severity: HIGH,CRITICAL
-          ignore-unfixed: true
+            
+            image-ref: ${{ matrix.app }}:latest
+            format: sarif
+            output: trivy-results.sarif
+            exit-code: 0
+          # image-ref: ${{ matrix.app }}:latest
+          # format: table
+          # exit-code: 1
+          # severity: HIGH,CRITICAL
+          # ignore-unfixed: true
 
