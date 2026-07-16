@@ -5,6 +5,13 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
 spec:
+  strategy:
+  type: RollingUpdate
+
+  rollingUpdate:
+    maxUnavailable: 0
+    maxSurge: 1
+    
   replicas: 1
   selector:
     matchLabels:
