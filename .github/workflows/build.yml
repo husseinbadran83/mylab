@@ -51,13 +51,22 @@ jobs:
             husseinbadran/${{ matrix.app }}:latest
             husseinbadran/${{ matrix.app }}:${{ env.SHORT_SHA }}
 
-      - name: Update Kubernetes Deployment
-        run: |
-          sed -i "s|image: husseinbadran/${{ matrix.app }}:.*|image: husseinbadran/${{ matrix.app }}:${SHORT_SHA}|g" \
-          base/kubernetes/${{ matrix.app }}/deployment.yaml
+      # - name: Update Kubernetes Deployment
+      #   run: |
+      #     sed -i "s|image: husseinbadran/${{ matrix.app }}:.*|image: husseinbadran/${{ matrix.app }}:${SHORT_SHA}|g" \
+      #     base/kubernetes/${{ matrix.app }}/deployment.yaml
           
-          sed -i "s|image: husseinbadran/ui:.*|image: husseinbadran/ui:${SHORT_SHA}|g" \
-          base/kubernetes/ui/deployment.yaml
+      #     sed -i "s|image: husseinbadran/ui:.*|image: husseinbadran/ui:${SHORT_SHA}|g"  base/kubernetes/ui/deployment.yaml
+
+      - name: Update Kubernetes Manifests
+        run: |
+          sed -i "s|image: husseinbadran/weather:.*|image: husseinbadran/weather:${SHORT_SHA}|g" base/kubernetes/weather/deployment.yaml
+
+          sed -i "s|image: husseinbadran/auth:.*|image: husseinbadran/auth:${SHORT_SHA}|g" base/kubernetes/auth/deployment.yaml
+
+          sed -i "s|image: husseinbadran/ui:.*|image: husseinbadran/ui:${SHORT_SHA}|g" base/kubernetes/ui/deployment.yaml 
+
+
 
 
       - name: Commit updated manifests
