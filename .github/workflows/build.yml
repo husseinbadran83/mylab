@@ -69,13 +69,7 @@ jobs:
       - name: Update Deployment Manifests
         run: |
 
-          sed -i "s|image: husseinbadran/auth:.*|image: husseinbadran/auth:${SHORT_SHA}|g" \
-            base/kubernetes/auth/deployment.yaml
-
-          sed -i "s|image: husseinbadran/weather:.*|image: husseinbadran/weather:${SHORT_SHA}|g" \
-            base/kubernetes/weather/deployment.yaml
-
-          sed -i "s|image: husseinbadran/ui:.*|image: husseinbadran/ui:${SHORT_SHA}|g" \
+            sed -i "s|image: husseinbadran/ui:.*|image: husseinbadran/ui:${SHORT_SHA}|g" \
             base/kubernetes/ui/deployment.yaml
 
       - name: Show Changes
