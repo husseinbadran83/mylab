@@ -1,4 +1,4 @@
-name: Build and Push Docker Images
+name: Build, Push and Release
 
 on:
   push:
@@ -7,8 +7,14 @@ on:
 
 permissions:
   contents: write
+
 jobs:
-  build:
+
+###############################################################################
+# Build Docker Images
+###############################################################################
+
+  build-images:
 
     runs-on: ubuntu-latest
 
@@ -21,26 +27,16 @@ jobs:
 
     steps:
 
-      - name: Checkout source
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
 
-      - name: Login to Docker Hub
+      - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: husseinbadran/${{ matrix.app }}
-      
-      - name: Set short SHA
+      - name: Set Short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
-
 
       - name: Build and Push
         uses: docker/build-push-action@v6
@@ -51,25 +47,41 @@ jobs:
             husseinbadran/${{ matrix.app }}:latest
             husseinbadran/${{ matrix.app }}:${{ env.SHORT_SHA }}
 
-      # - name: Update Kubernetes Deployment
-      #   run: |
-      #     sed -i "s|image: husseinbadran/${{ matrix.app }}:.*|image: husseinbadran/${{ matrix.app }}:${SHORT_SHA}|g" \
-      #     base/kubernetes/${{ matrix.app }}/deployment.yaml
-          
-      #     sed -i "s|image: husseinbadran/ui:.*|image: husseinbadran/ui:${SHORT_SHA}|g"  base/kubernetes/ui/deployment.yaml
+###############################################################################
+# Update Kubernetes manifests
+###############################################################################
 
-      - name: Update Kubernetes Manifests
+  update-manifests:
+
+    needs: build-images
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set Short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Update Deployment Manifests
         run: |
-          sed -i "s|image: husseinbadran/weather:.*|image: husseinbadran/weather:${SHORT_SHA}|g" base/kubernetes/weather/deployment.yaml
 
-          sed -i "s|image: husseinbadran/auth:.*|image: husseinbadran/auth:${SHORT_SHA}|g" base/kubernetes/auth/deployment.yaml
+          sed -i "s|image: husseinbadran/auth:.*|image: husseinbadran/auth:${SHORT_SHA}|g" \
+            base/kubernetes/auth/deployment.yaml
 
-          sed -i "s|image: husseinbadran/ui:.*|image: husseinbadran/ui:${SHORT_SHA}|g" base/kubernetes/ui/deployment.yaml 
+          sed -i "s|image: husseinbadran/weather:.*|image: husseinbadran/weather:${SHORT_SHA}|g" \
+            base/kubernetes/weather/deployment.yaml
 
+          sed -i "s|image: husseinbadran/ui:.*|image: husseinbadran/ui:${SHORT_SHA}|g" \
+            base/kubernetes/ui/deployment.yaml
 
+      - name: Show Changes
+        run: git diff
 
-
-      - name: Commit updated manifests
+      - name: Commit and Push
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
@@ -82,4 +94,4 @@ jobs:
           fi
 
           git commit -m "Update images to ${SHORT_SHA}"
-          git push      
+          git push
