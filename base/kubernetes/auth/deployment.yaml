@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: weatherapp-auth
-        image: husseinbadran/auth:526cfc8
+        image: husseinbadran/auth:c6f046d
         imagePullPolicy: IfNotPresent
         ##imagePullPolicy: Never 
         ports:
