@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: weatherapp-weather
-          image: "husseinbadran/weather:weather"
+          image: "husseinbadran/weather:latest"
           imagePullPolicy: IfNotPresent
           env:
           - name: APIKEY
