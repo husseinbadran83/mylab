@@ -45,4 +45,24 @@ jobs:
           push: true
           tags: |
             husseinbadran/${{ matrix.app }}:latest
-            husseinbadran/${{ matrix.app }}:${{  env.SHORT_SHA }}
+            husseinbadran/${{ matrix.app }}:${{ env.SHORT_SHA }}
+
+      - name: Update Kubernetes Deployment
+        run: |
+          sed -i "s|image: husseinbadran/${{ matrix.app }}:.*|image: husseinbadran/${{ matrix.app }}:${SHORT_SHA}|g" \
+          base/kubernetes/${{ matrix.app }}/deployment.yaml
+
+      - name: Commit updated manifests
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add base/kubernetes
+
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+
+          git commit -m "Update images to ${SHORT_SHA}"
+          git push      
